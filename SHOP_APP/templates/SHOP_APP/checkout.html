@@ -1,0 +1,10 @@
+{% extends 'SHOP_APP/shop.html' %}
+{% block content %}
+<h2>BILLING DETAILS</h2>
+<form method = 'POST'>
+{% csrf_token %}
+{{form_1.as_p}}
+{{form_2.as_p}}
+<button type = 'submit'> Pay </button>
+</form>
+{% endblock content %}

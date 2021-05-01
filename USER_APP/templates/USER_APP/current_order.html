@@ -1,0 +1,14 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+<h2>Order details</h2>
+<p>{{order.date_ordered}}</p>
+<p>Order complete status(True/False):{{order.complete}}</p>
+<p>Transaction id:{{order.transaction_id}}</p>
+<p> Shipping method {{order.shipping.shipping_method}} </p>
+<h2>Products:</h2>
+{% for item in order.products.all %}
+<p>Name:{{item.product.name}} Quantity: {{item.quantity}} Full price: {{item.get_total}} </p>
+{% endfor %}
+<p> Full price: {{order.get_cart_total|add:order.shipping.shipping_cost}} </p>
+
+{% endblock content %}

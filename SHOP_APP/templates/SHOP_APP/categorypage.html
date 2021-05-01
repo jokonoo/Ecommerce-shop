@@ -1,0 +1,18 @@
+{% extends 'SHOP_APP/shop.html' %}
+{% block content %}
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% for item in object_list %}
+	<h1><a href= "{% url 'product_details' item.slug %}">{{item.name}}</a></h1>
+	{% if item.discount_price %}
+		<p>{{item.discount_price}}</p>
+	{% else %}
+		<p>{{item.price}}</p>
+	{% endif %}
+{% endfor %}
+{% endblock content %}

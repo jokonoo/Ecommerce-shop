@@ -1,0 +1,8 @@
+<html><body>
+<h1>Profiles</h1>
+<ul>
+    {% for product in queryset %}
+    <li>{{ product.name }}</li>
+    {% endfor %}
+</ul>
+</body></html>

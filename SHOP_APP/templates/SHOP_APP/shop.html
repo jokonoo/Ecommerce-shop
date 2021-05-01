@@ -1,0 +1,33 @@
+{% extends 'BASE_APP/index.html' %}
+{% block nav %}
+<ul class="nav-login">
+	{% if user.is_authenticated %}
+		<li><a href= "{% url 'cart' %}" >Cart</a></li>
+		<li><a href= "{% url 'user-profile' %}" >Profile</a></li>
+		<li><a href= "{% url 'website-logout' %}" >Log out</a></li>  
+	{% else %}
+		<li><a href= "{% url 'website-register' %}" >Sign up</a></li>
+		<li><a href= "{% url 'website-login' %}" >Log in</a></li>
+	{% endif %}
+</ul>
+{% endblock nav %}
+{% block content %}
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% for product in object_list %}
+	<h1><a href= "{% url 'product_details' product.slug %}">{{product.name}}</a></h1>
+	{% if product.discount_price %}
+		<p>{{product.discount_price}}</p>
+	{% else %}
+		<p>{{product.price}}</p>
+	{% endif %}
+{% endfor %}
+{% for key, value in categories %}
+	<p><a href ="{% url 'category_shop' key %}">{{value}}</a></p>
+{% endfor %}
+{% endblock content %}

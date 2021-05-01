@@ -1,0 +1,19 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+<h1>{{object.title}} </h1>
+<p>{{object.content}}</p>
+{% if object.author == user %}
+	<li><a href= "{% url 'website-updatenews' object.pk %}" >Update</a></li>
+	<li><a href= "{% url 'website-deletenews' object.pk %}" >Delete</a></li>
+{% endif %}  
+<form method = 'POST'>
+	{% csrf_token %}
+	{{form.as_p}}
+	<button type = 'submit'> Add comment </button>
+</form>
+{% for o in comments %}
+	<h3>{{o.author.username}} </h3>
+	<p>{{o.content}}</p>
+	<p>{{o.date}}</p>
+{% endfor %}
+{% endblock content %}

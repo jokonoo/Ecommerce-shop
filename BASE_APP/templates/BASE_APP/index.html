@@ -1,0 +1,42 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="container">
+  <div class="container-nav">
+    <a href="{% url 'website-home' %}" class="logo">LOGO</a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href= "#" >About</a></li>
+        <li><a href= "{% url 'website-contact' %}" >Contact</a></li>
+        <li><a href= "{% url 'website-news' %}" >News</a></li>
+        <li><a href= "{% url 'website_shop' %}" >Shop</a></li>
+      </ul>
+      {% block nav %}
+      <ul class="nav-login">
+      {% if user.is_authenticated %}
+        <li><a href= "{% url 'user-profile' %}" >Profile</a></li>
+        <li><a href= "{% url 'website-logout' %}" >Log out</a></li>  
+        {% if perms.BASE_APP.can_create_news %}
+          <li><a href= "{% url 'website-createnews' %}" >Create News</a></li>
+        {% endif %}
+      {% else %}
+        <li><a href= "{% url 'website-register' %}" >Sign up</a></li>
+        <li><a href= "{% url 'website-login' %}" >Log in</a></li>
+      {% endif %}
+      </ul>
+      {% endblock nav %}
+    </nav>
+  </div>
+  </div>
+  {% block content %}
+  {% endblock content %}
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+<div>
+	<p><a href = "{% url 'user-profile' %}">Profile</a></p>
+	<p><a href = "{% url 'order_user_list' %}">Orders</a></p>
+</div>
+{% for item in object_list %}
+<li><a href = "{% url 'current_order' item.pk %}">{{item.transaction_id}}</a></li>
+<p>{{item.date_ordered}}</p>
+{% endfor %}
+{% endblock content %} 

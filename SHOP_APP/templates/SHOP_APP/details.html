@@ -1,0 +1,11 @@
+{% extends 'SHOP_APP/shop.html' %}
+{% block content %}
+<p>{{product.name}}</p>
+{% if product.discount_price %}
+	<p>{{product.discount_price}}</p>
+{% else %}
+	<p>{{product.price}}</p>
+{% endif %}
+<p>{{product.description}}</p>
+<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
+{% endblock content %}

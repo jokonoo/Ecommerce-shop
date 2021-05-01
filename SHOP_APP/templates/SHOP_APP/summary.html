@@ -1,0 +1,18 @@
+{% extends 'SHOP_APP/shop.html' %}
+{% block content %}
+<h2>Items</h2>
+{% for item in order %}
+	<div>
+		<p>Name: {{item.product.name}}</p>
+		<p>Quantity: {{item.quantity}}</p>
+		<p>Price: {{item.get_total}} </p>
+	</div>
+{% endfor %}
+<h2>TOTAL COST OF ITEMS: {{base.get_cart_total}}</h2>
+<h2>Choose shipping method</h2>
+<form method = 'POST'>
+{% csrf_token %}
+{{form.as_p}}
+<button type = 'submit'> Checkout </button>
+</form>
+{% endblock content %}

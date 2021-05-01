@@ -1,0 +1,9 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+<form method = 'POST'>
+	{% csrf_token %}
+	{{form.as_p}}
+	<button type = 'submit'> Login </button>
+</form>
+<a href = "{% url 'password_reset' %}"> Reset your password <a>
+{% endblock content %}

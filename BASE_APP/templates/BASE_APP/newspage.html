@@ -1,0 +1,8 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+	{% for item in object_list %}
+		<h1><a href= "{% url 'website-detailnews' item.pk %}">{{item.title}}</a></h1>
+		<p>{{item.content}}</p>
+	{% endfor %}
+{% endblock content %}
+
