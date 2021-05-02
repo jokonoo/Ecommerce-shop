@@ -36,4 +36,10 @@ class CreateCommentForm(forms.ModelForm):
 
 	class Meta:
 		model = Comment
-		exclude = ['author', 'date']
+		exclude = ['author', 'date', 'news']
+
+class UpdateCommentForm(forms.ModelForm):
+
+	class Meta:
+		model = Comment
+		fields = ['content']

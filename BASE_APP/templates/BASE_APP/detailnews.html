@@ -3,7 +3,7 @@
 <h1>{{object.title}} </h1>
 <p>{{object.content}}</p>
 {% if object.author == user %}
-	<li><a href= "{% url 'website-updatenews' object.pk %}" >Update</a></li>
+	<li><a href= "{% url 'website-updatenews' object.pk %}" >Edit</a></li>
 	<li><a href= "{% url 'website-deletenews' object.pk %}" >Delete</a></li>
 {% endif %}  
 <form method = 'POST'>
@@ -15,5 +15,9 @@
 	<h3>{{o.author.username}} </h3>
 	<p>{{o.content}}</p>
 	<p>{{o.date}}</p>
+	{% if o.author == user %}
+		<a href = "{% url 'comment-update' pk=o.pk %}"> Edit </a>
+		<a href = "{% url 'comment-delete' pk=o.pk %}"> Delete </a>
+	{% endif %}
 {% endfor %}
 {% endblock content %}

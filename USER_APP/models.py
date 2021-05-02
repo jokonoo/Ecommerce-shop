@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from django.utils import timezone
+from BASE_APP.models import News
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete = models.CASCADE)
@@ -24,6 +25,7 @@ class Profile(models.Model):
 
 class Comment(models.Model):
 	author = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+	news = models.ForeignKey(News, on_delete = models.CASCADE, null = True, default = None)
 	content = models.TextField()
 	date = models.DateTimeField(default = timezone.now)
 
