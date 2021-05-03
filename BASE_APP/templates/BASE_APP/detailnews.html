@@ -5,14 +5,17 @@
 {% if object.author == user %}
 	<li><a href= "{% url 'website-updatenews' object.pk %}" >Edit</a></li>
 	<li><a href= "{% url 'website-deletenews' object.pk %}" >Delete</a></li>
-{% endif %}  
-<form method = 'POST'>
-	{% csrf_token %}
-	{{form.as_p}}
-	<button type = 'submit'> Add comment </button>
-</form>
+{% endif %}
+<h2>Komentarze: </h2>
+{% if user.is_authenticated %}  
+	<form method = 'POST'>
+		{% csrf_token %}
+		{{form.as_p}}
+		<button type = 'submit'> Add comment </button>
+	</form>
+{% endif %}
 {% for o in comments %}
-	<h3>{{o.author.username}} </h3>
+	<h4>{{o.author.username}} </h4>
 	<p>{{o.content}}</p>
 	<p>{{o.date}}</p>
 	{% if o.author == user %}

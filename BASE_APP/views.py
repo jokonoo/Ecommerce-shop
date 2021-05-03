@@ -4,8 +4,9 @@ from django.urls import reverse_lazy, reverse
 from datetime import datetime
 from .models import News
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from .decorators import permission_checking
+from .decorators import permission_checking, user_is_author
 from USER_APP.forms import CreateCommentForm , UpdateCommentForm
 from USER_APP.models import Comment
 
@@ -36,6 +37,8 @@ def news_detail_view(request, pk):
 		form = CreateCommentForm()
 	return render(request, 'BASE_APP/detailnews.html', context = {'object' : news, 'comments' : comments, 'form' : form})
 
+@login_required
+@user_is_author
 def comment_edit_view(request, pk):
 	comment = Comment.objects.get(pk = pk)
 	if request.user == comment.author:
@@ -50,10 +53,16 @@ def comment_edit_view(request, pk):
 		return redirect('website-detailnews', comment.news.pk)
 	return render(request, 'BASE_APP/commentedit.html', context = {'form' : form})
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	model = Comment
 	template_name = 'BASE_APP/deletecomment.html'
 	success_url = reverse_lazy('website-news')
+
+	def test_func(self):
+		if self.get_object().author == self.request.user:
+			return True
+		else:
+			return False
 
 class CreateNewsView(LoginRequiredMixin, PermissionRequiredMixin ,CreateView):
 	permission_required = 'BASE_APP.can_create_news'
