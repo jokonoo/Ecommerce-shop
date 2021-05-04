@@ -14,13 +14,32 @@
 		<button type = 'submit'> Add comment </button>
 	</form>
 {% endif %}
-{% for o in comments %}
-	<h4>{{o.author.username}} </h4>
-	<p>{{o.content}}</p>
-	<p>{{o.date}}</p>
-	{% if o.author == user %}
-		<a href = "{% url 'comment-update' pk=o.pk %}"> Edit </a>
-		<a href = "{% url 'comment-delete' pk=o.pk %}"> Delete </a>
+{% for item in page_obj %}
+	<h4>{{item.author.username}} </h4>
+	<p>{{item.content}}</p>
+	<p>{{item.date}}</p>
+	{% if item.author == user %}
+		<a href = "{% url 'comment-update' pk=item.pk %}"> Edit </a>
+		<a href = "{% url 'comment-delete' pk=item.pk %}"> Delete </a>
 	{% endif %}
 {% endfor %}
+<p>
+{% if page_obj.paginator.count > page_obj.paginator.per_page %}
+		{% if page_obj.has_previous %}
+			<a href = "?page=1"> First </a>
+			<a href = "?page={{page_obj.previous_page_number}}">Previous</a>
+		{% endif %}
+		{% for page in page_obj.paginator.page_range %}
+			{% if page == page_obj.number %}
+				{{page_obj.number}}
+			{% elif page > page_obj.number|add:-3 and page < page_obj.number|add:3%}
+			<a href ="?page={{page}}">{{page}}</a>
+			{% endif %}
+		{% endfor %}
+		{% if page_obj.has_next %}
+			<a href = "?page={{page_obj.next_page_number}}"> Next </a>
+			<a href = "?page={{page_obj.paginator.num_pages}}"> Last </a>
+		{% endif %}
+	{% endif %}
+</p>
 {% endblock content %}

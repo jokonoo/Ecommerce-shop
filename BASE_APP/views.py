@@ -23,13 +23,14 @@ def contact(request):
 	return render(request, 'BASE_APP/contact.html')
 
 class NewsListView(ListView):
-	paginate_by = 1
+	paginate_by = 10
 	queryset = News.objects.all().order_by('-date_posted')
 	template_name = 'BASE_APP/newspage.html'
 
 def news_detail_view(request, pk):
 	news = News.objects.get(pk = pk)
 	comments = Comment.objects.filter(news = news).order_by('date')
+	paginator = Paginator(comments, 10)
 	if request.method == 'POST':
 		form = CreateCommentForm(request.POST)
 		if form.is_valid():
@@ -40,7 +41,9 @@ def news_detail_view(request, pk):
 			return redirect('website-detailnews', pk = pk)
 	else:
 		form = CreateCommentForm()
-	return render(request, 'BASE_APP/detailnews.html', context = {'object' : news, 'comments' : comments, 'form' : form})
+		page_number = request.GET.get('page')
+		page_obj = paginator.get_page(page_number)
+	return render(request, 'BASE_APP/detailnews.html', context = {'object' : news, 'comments' : comments, 'form' : form, 'page_obj': page_obj})
 
 @login_required
 @user_is_author
