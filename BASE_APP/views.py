@@ -1,14 +1,18 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
-from datetime import datetime
-from .models import News
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+
 from .decorators import permission_checking, user_is_author
+from .models import News
+
 from USER_APP.forms import CreateCommentForm , UpdateCommentForm
 from USER_APP.models import Comment
+
+from datetime import datetime
 
 #@permission_checking(['admin'])
 def homee(request):
@@ -19,12 +23,13 @@ def contact(request):
 	return render(request, 'BASE_APP/contact.html')
 
 class NewsListView(ListView):
+	paginate_by = 1
 	queryset = News.objects.all().order_by('-date_posted')
 	template_name = 'BASE_APP/newspage.html'
 
 def news_detail_view(request, pk):
 	news = News.objects.get(pk = pk)
-	comments = Comment.objects.all().order_by('date')
+	comments = Comment.objects.filter(news = news).order_by('date')
 	if request.method == 'POST':
 		form = CreateCommentForm(request.POST)
 		if form.is_valid():
