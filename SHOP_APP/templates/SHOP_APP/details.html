@@ -8,7 +8,8 @@
 	{% endif %}
 	<p>{{product.description}}</p>
 	<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
-	<h2> Opinions: </h2>
+	<h2> Opinions:</h2>
+	<p><a href = "{% url 'create_opinion' product.pk %}">Click here to add your opinion</a></p> 
 	{% for item in page_obj %}
 		<h3>{{item.author.username}}</h3>
 		<h4>Rated: <a> {{item.rating}} </a> </h4>

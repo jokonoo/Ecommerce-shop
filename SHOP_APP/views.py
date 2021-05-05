@@ -8,6 +8,7 @@ from django.views import View
 from django.utils import timezone
 from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 class ShopView(ListView):
 	paginate_by = 10
@@ -44,6 +45,21 @@ class ProductDetailView(DetailView):
 		context['opinions'] = opinions
 		context['page_obj'] = page_obj
 		return context
+
+class OpinionCreateView(CreateView):
+	model = ProductOpinion
+	fields = ['rating', 'content']
+	template_name = 'SHOP_APP/opinioncreation.html'
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		form.instance.product = Product.objects.get(pk = self.kwargs.get('product'))
+		return super().form_valid(form)
+
+	def get_success_url(self):
+		print(Product.objects.get(pk = self.kwargs.get('product')).slug)
+		return reverse('product_details', kwargs = {'slug' : Product.objects.get(pk = self.kwargs.get('product')).slug})
+
 
 @login_required
 def add_to_cart(request, slug):
