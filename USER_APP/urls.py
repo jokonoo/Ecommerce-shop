@@ -24,5 +24,5 @@ urlpatterns = [
     name = 'password_reset_complete'),
 
     path('profile/orders', views.OrderView.as_view(), name = 'order_user_list'),
-    path('profile/orders/<int:pk>', views.CurrentOrderView.as_view(), name = 'current_order')
+    path('profile/orders/<int:pk>', views.OrderDetailView.as_view(), name = 'current_order')
 ]

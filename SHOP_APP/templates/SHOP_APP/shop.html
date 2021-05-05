@@ -19,7 +19,13 @@
     {% endfor %}
   </ul>
 {% endif %}
-{% for product in object_list %}
+
+{% if page_obj.number == 1 %}
+	{% for key, value in categories %}
+		<p><a href ="{% url 'category_shop' key %}">{{value}}</a></p>
+	{% endfor %}
+{% endif %}
+{% for product in page_obj %}
 	<h1><a href= "{% url 'product_details' product.slug %}">{{product.name}}</a></h1>
 	{% if product.discount_price %}
 		<p>{{product.discount_price}}</p>
@@ -27,7 +33,22 @@
 		<p>{{product.price}}</p>
 	{% endif %}
 {% endfor %}
-{% for key, value in categories %}
-	<p><a href ="{% url 'category_shop' key %}">{{value}}</a></p>
-{% endfor %}
+
+{% if paginator.count > paginator.per_page %}
+	{% if page_obj.has_previous %}
+		<a href = "?page=1"> First </a>
+		<a href = "?page={{page_obj.previous_page_number}}">Previous</a>
+	{% endif %}
+	{% for page in paginator.page_range %}
+		{% if page == page_obj.number %}
+			{{page_obj.number}}
+		{% elif page > page_obj.number|add:-3 and page < page_obj.number|add:3%}
+		<a href ="?page={{page}}">{{page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if page_obj.has_next %}
+		<a href = "?page={{page_obj.next_page_number}}"> Next </a>
+		<a href = "?page={{paginator.num_pages}}"> Last </a>
+	{% endif %}
+{% endif %}
 {% endblock content %}

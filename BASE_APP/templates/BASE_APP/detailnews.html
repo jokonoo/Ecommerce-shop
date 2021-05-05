@@ -1,45 +1,45 @@
 {% extends 'BASE_APP/index.html' %}
 {% block content %}
-<h1>{{object.title}} </h1>
-<p>{{object.content}}</p>
-{% if object.author == user %}
-	<li><a href= "{% url 'website-updatenews' object.pk %}" >Edit</a></li>
-	<li><a href= "{% url 'website-deletenews' object.pk %}" >Delete</a></li>
-{% endif %}
-<h2>Komentarze: </h2>
-{% if user.is_authenticated %}  
-	<form method = 'POST'>
-		{% csrf_token %}
-		{{form.as_p}}
-		<button type = 'submit'> Add comment </button>
-	</form>
-{% endif %}
-{% for item in page_obj %}
-	<h4>{{item.author.username}} </h4>
-	<p>{{item.content}}</p>
-	<p>{{item.date}}</p>
-	{% if item.author == user %}
-		<a href = "{% url 'comment-update' pk=item.pk %}"> Edit </a>
-		<a href = "{% url 'comment-delete' pk=item.pk %}"> Delete </a>
+	<h1>{{object.title}} </h1>
+	<p>{{object.content}}</p>
+	{% if object.author == user %}
+		<li><a href= "{% url 'website-updatenews' object.pk %}" >Edit</a></li>
+		<li><a href= "{% url 'website-deletenews' object.pk %}" >Delete</a></li>
 	{% endif %}
-{% endfor %}
-<p>
-{% if page_obj.paginator.count > page_obj.paginator.per_page %}
-		{% if page_obj.has_previous %}
-			<a href = "?page=1"> First </a>
-			<a href = "?page={{page_obj.previous_page_number}}">Previous</a>
+	<h2>Komentarze: </h2>
+	{% if user.is_authenticated %}  
+		<form method = 'POST'>
+			{% csrf_token %}
+			{{form.as_p}}
+			<button type = 'submit'> Add comment </button>
+		</form>
+	{% endif %}
+	{% for item in page_obj %}
+		<h4>{{item.author.username}} </h4>
+		<p>{{item.content}}</p>
+		<p>{{item.date}}</p>
+		{% if item.author == user %}
+			<a href = "{% url 'comment-update' pk=item.pk %}"> Edit </a>
+			<a href = "{% url 'comment-delete' pk=item.pk %}"> Delete </a>
 		{% endif %}
-		{% for page in page_obj.paginator.page_range %}
-			{% if page == page_obj.number %}
-				{{page_obj.number}}
-			{% elif page > page_obj.number|add:-3 and page < page_obj.number|add:3%}
-			<a href ="?page={{page}}">{{page}}</a>
+	{% endfor %}
+	<p>
+		{% if page_obj.paginator.count > page_obj.paginator.per_page %}
+			{% if page_obj.has_previous %}
+				<a href = "?page=1"> First </a>
+				<a href = "?page={{page_obj.previous_page_number}}">Previous</a>
 			{% endif %}
-		{% endfor %}
-		{% if page_obj.has_next %}
-			<a href = "?page={{page_obj.next_page_number}}"> Next </a>
-			<a href = "?page={{page_obj.paginator.num_pages}}"> Last </a>
+			{% for page in page_obj.paginator.page_range %}
+				{% if page == page_obj.number %}
+					{{page_obj.number}}
+				{% elif page > page_obj.number|add:-3 and page < page_obj.number|add:3%}
+				<a href ="?page={{page}}">{{page}}</a>
+				{% endif %}
+			{% endfor %}
+			{% if page_obj.has_next %}
+				<a href = "?page={{page_obj.next_page_number}}"> Next </a>
+				<a href = "?page={{page_obj.paginator.num_pages}}"> Last </a>
+			{% endif %}
 		{% endif %}
-	{% endif %}
-</p>
+	</p>
 {% endblock content %}

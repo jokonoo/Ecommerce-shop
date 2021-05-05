@@ -37,12 +37,13 @@ def user_profile_view(request):
 	return render(request, 'USER_APP/profile.html', context)
 
 class OrderView(LoginRequiredMixin, ListView):
+	paginate_by = 10
 	template_name = 'USER_APP/orders.html'
 	def get_queryset(self):
 		order = Order.objects.filter(user = self.request.user, complete = False)
 		return order
 
-class CurrentOrderView(LoginRequiredMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, DetailView):
 	model = Order
 	template_name = 'USER_APP/current_order.html'
 	context_object_name = 'order'

@@ -8,6 +8,7 @@ from django.utils import timezone
 from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm
 
 class ShopView(ListView):
+	paginate_by = 10
 	model = Product
 	template_name = 'SHOP_APP/shop.html'
 
@@ -17,6 +18,7 @@ class ShopView(ListView):
 		return context
 
 class CategoryView(ListView):
+	paginate_by = 10
 	model = Product
 	template_name = 'SHOP_APP/categorypage.html'
 
