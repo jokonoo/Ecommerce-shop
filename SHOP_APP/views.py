@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Order, OrderItem, BillingAddress, Shipping
+from USER_APP.models import ProductOpinion
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.views import View
 from django.utils import timezone
 from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm
+from django.core.paginator import Paginator
 
 class ShopView(ListView):
 	paginate_by = 10
@@ -30,6 +32,18 @@ class ProductDetailView(DetailView):
 	model = Product
 	template_name = 'SHOP_APP/details.html'
 	context_object_name = 'product'
+
+	def get_context_data(self, **kwargs):
+		opinions = ProductOpinion.objects.all().order_by('date')
+		
+		paginator = Paginator(opinions, 10)
+		page_number = self.request.GET.get('page')
+		page_obj = paginator.get_page(page_number)
+		
+		context = super().get_context_data(**kwargs)
+		context['opinions'] = opinions
+		context['page_obj'] = page_obj
+		return context
 
 @login_required
 def add_to_cart(request, slug):

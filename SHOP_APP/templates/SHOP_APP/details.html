@@ -1,11 +1,37 @@
 {% extends 'SHOP_APP/shop.html' %}
 {% block content %}
-<p>{{product.name}}</p>
-{% if product.discount_price %}
-	<p>{{product.discount_price}}</p>
-{% else %}
-	<p>{{product.price}}</p>
-{% endif %}
-<p>{{product.description}}</p>
-<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
+	<p>{{product.name}}</p>
+	{% if product.discount_price %}
+		<p>{{product.discount_price}}</p>
+	{% else %}
+		<p>{{product.price}}</p>
+	{% endif %}
+	<p>{{product.description}}</p>
+	<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
+	<h2> Opinions: </h2>
+	{% for item in page_obj %}
+		<h3>{{item.author.username}}</h3>
+		<h4>Rated: <a> {{item.rating}} </a> </h4>
+		<p>{{item.content}}</p>
+		<p>{{item.date}}</p>
+	{% endfor %}
+	<p>
+		{% if page_obj.paginator.count > page_obj.paginator.per_page %}
+			{% if page_obj.has_previous %}
+				<a href = "?page=1"> First </a>
+				<a href = "?page={{page_obj.previous_page_number}}">Previous</a>
+			{% endif %}
+			{% for page in page_obj.paginator.page_range %}
+				{% if page == page_obj.number %}
+					{{page_obj.number}}
+				{% elif page > page_obj.number|add:-3 and page < page_obj.number|add:3%}
+				<a href ="?page={{page}}">{{page}}</a>
+				{% endif %}
+			{% endfor %}
+			{% if page_obj.has_next %}
+				<a href = "?page={{page_obj.next_page_number}}"> Next </a>
+				<a href = "?page={{page_obj.paginator.num_pages}}"> Last </a>
+			{% endif %}
+		{% endif %}
+	</p>
 {% endblock content %}
