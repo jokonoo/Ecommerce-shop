@@ -11,7 +11,7 @@ class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete = models.CASCADE)
 	nickname = models.CharField(max_length = 100)
 	description = models.CharField(max_length = 500, blank = True, null = True)
-	picture = models.ImageField(upload_to = 'ProfilePictures', default = 'default.jpg', null = True, blank = True)
+	picture = models.ImageField(upload_to = 'ProfilePictures', default = 'default.jpg', null = True)
 
 	def __str__(self):
 		return self.user.username
@@ -20,11 +20,12 @@ class Profile(models.Model):
 		super().save()
 		
 		img = Image.open(self.picture.path)
-
-		if img.height > 300 or img.height < 300 or img.width > 300 or img.width < 300:
-			output_size = (300, 300)
+		output_size = (256, 256)
+		
+		if img.height > 256 or img.width > 256 or img.width < 256 or img.height <256:
 			img.thumbnail(output_size)
 			img.save(self.picture.path)
+
 
 class Comment(models.Model):
 	author = models.ForeignKey(User, on_delete = models.DO_NOTHING)

@@ -25,8 +25,8 @@ def user_profile_view(request):
 		s_form = ShippingAddressUpdateForm(request.POST, instance = request.user.shippingaddress)
 		if u_form.is_valid() and p_form.is_valid() and s_form.is_valid():
 			u_form.save()
-			p_form.save()
 			s_form.save()
+			p_form.save()
 			return redirect('user-profile')
 	else:
 		u_form = UserUpdateForm(instance = request.user)

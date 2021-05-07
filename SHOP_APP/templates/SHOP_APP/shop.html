@@ -26,11 +26,12 @@
 	{% endfor %}
 {% endif %}
 {% for product in page_obj %}
+	<a href= "{% url 'product_details' product.slug %}"><img src={{product.image.url}}></img></a>
 	<h1><a href= "{% url 'product_details' product.slug %}">{{product.name}}</a></h1>
 	{% if product.discount_price %}
-		<p>{{product.discount_price}}</p>
+		<h3>{{product.discount_price}}$</h3>
 	{% else %}
-		<p>{{product.price}}</p>
+		<h3>{{product.price}}$</h3>
 	{% endif %}
 {% endfor %}
 

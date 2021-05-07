@@ -1,19 +1,19 @@
 {% extends 'BASE_APP/index.html' %}
 {% block content %}
-<form method = 'POST' enctype = 'multipart/form-data'>
-	{% csrf_token %}
 	<div>
 		<p><a href = "{% url 'user-profile' %}">Profile</a></p>
 		<p><a href = "{% url 'order_user_list' %}">Orders</a></p>
 	</div>
-	<h2>Profile</h2>
-	{% if user.profile.picture %}
-		<img src = {{user.profile.picture.url}}> </img>
-	{% endif %}
-	{{p_form.as_p}}
-	{{u_form.as_p}}
-	<h2>Shipping info</h2>
-	{{s_form.as_p}}
-	<button type = 'submit'> Update </button>
-</form>
+	<form method = 'POST' enctype = 'multipart/form-data'>
+		{% csrf_token %}
+		<h2>Profile</h2>
+		{% if user.profile.picture %}
+			<img src = {{user.profile.picture.url}}> </img>
+		{% endif %}
+		{{p_form.as_p}}
+		{{u_form.as_p}}
+		<h2>Shipping info</h2>
+		{{s_form.as_p}}
+		<button type = 'submit'> Update </button>
+	</form>
 {% endblock content %}

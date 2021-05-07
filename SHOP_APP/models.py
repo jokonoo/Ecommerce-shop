@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
-
+from PIL import Image
 class Product(models.Model):
 
     CATEGORIES = [
@@ -23,10 +23,18 @@ class Product(models.Model):
     item_id = models.IntegerField(blank = True, null = True)
 
     def save(self, *args, **kwargs):
-        self.api_link ='http://127.0.0.1:8000'+reverse('api_detail_view', kwargs = {
-            'slug' : self.slug
-            })
+        #self.api_link ='http://127.0.0.1:8000'+reverse('api_detail_view', kwargs = {
+        #    'slug' : self.slug
+        #    })
         super().save()
+
+        img = Image.open(self.image.path)
+        output_size = (256, 256)
+        
+        if img.height > 256 or img.width > 256 or img.width < 256 or img.height <256:
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
 
     @property
     def imageURL(self):

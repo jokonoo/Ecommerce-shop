@@ -1,10 +1,11 @@
 {% extends 'SHOP_APP/shop.html' %}
 {% block content %}
-	<p>{{product.name}}</p>
+	<h1>{{product.name}}</h1>
+	<img src={{product.image.url}}></img>
 	{% if product.discount_price %}
-		<p>{{product.discount_price}}</p>
+		<h2>{{product.discount_price}}$</h2>
 	{% else %}
-		<p>{{product.price}}</p>
+		<h2>{{product.price}}$</h2>
 	{% endif %}
 	<p>{{product.description}}</p>
 	<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
