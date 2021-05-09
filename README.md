@@ -5,6 +5,7 @@
 This project is my first take on writing e-commerce shop.
 All available options at this moment are:
 
+```
 **-Login**
 **-Register**
 **-Changing password**
@@ -18,3 +19,4 @@ All available options at this moment are:
 **-Adding opinions on items**
 **-Filtering items by price and category**
 **-And a few more...**
+```
