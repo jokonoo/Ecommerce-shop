@@ -17,6 +17,7 @@ All available options at this moment are:
 -Commenting news, editing, and deleting your comments
 -Adding items to cart and removing it
 -Adding opinions on items
+-Checking your order on checkout page with selecting payment method, and shipping method
 -Filtering items by price and category
 -And a few more...
 ```
