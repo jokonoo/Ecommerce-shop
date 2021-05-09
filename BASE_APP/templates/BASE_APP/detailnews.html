@@ -14,15 +14,19 @@
 			<button type = 'submit'> Add comment </button>
 		</form>
 	{% endif %}
-	{% for item in page_obj %}
-		<h4>{{item.author.username}} </h4>
-		<p>{{item.content}}</p>
-		<p>{{item.date}}</p>
-		{% if item.author == user %}
-			<a href = "{% url 'comment-update' pk=item.pk %}"> Edit </a>
-			<a href = "{% url 'comment-delete' pk=item.pk %}"> Delete </a>
-		{% endif %}
-	{% endfor %}
+	{% if not page_obj %}
+		<p>There are currently no comments, <a href = "{% url 'website-login' %}">login</a> to add first.</p>
+	{% else %}
+		{% for item in page_obj %}
+			<h4>{{item.author.username}} </h4>
+			<p>{{item.content}}</p>
+			<p>{{item.date}}</p>
+			{% if item.author == user %}
+				<a href = "{% url 'comment-update' pk=item.pk %}"> Edit </a>
+				<a href = "{% url 'comment-delete' pk=item.pk %}"> Delete </a>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
 	<p>
 		{% if page_obj.paginator.count > page_obj.paginator.per_page %}
 			{% if page_obj.has_previous %}

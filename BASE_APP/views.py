@@ -64,13 +64,16 @@ def comment_edit_view(request, pk):
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	model = Comment
 	template_name = 'BASE_APP/deletecomment.html'
-	success_url = reverse_lazy('website-news')
 
 	def test_func(self):
 		if self.get_object().author == self.request.user:
 			return True
 		else:
 			return False
+
+	def get_success_url(self, *args, **kwargs):
+		object = Comment.objects.get(pk = self.kwargs.get('pk'))
+		return reverse_lazy('website-detailnews', args=(object.news.pk,))
 
 class CreateNewsView(LoginRequiredMixin, PermissionRequiredMixin ,CreateView):
 	permission_required = 'BASE_APP.can_create_news'

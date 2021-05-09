@@ -20,10 +20,10 @@ class Profile(models.Model):
 		super().save()
 		
 		img = Image.open(self.picture.path)
-		output_size = (256, 256)
+		output_size = (120, 120)
 		
-		if img.height > 256 or img.width > 256 or img.width < 256 or img.height <256:
-			img.thumbnail(output_size)
+		if img.height > 120 or img.width > 120 or img.width < 120 or img.height <120:
+			img = img.resize(output_size, Image.ANTIALIAS)
 			img.save(self.picture.path)
 
 

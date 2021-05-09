@@ -32,7 +32,7 @@ class Product(models.Model):
         output_size = (256, 256)
         
         if img.height > 256 or img.width > 256 or img.width < 256 or img.height <256:
-            img.thumbnail(output_size)
+            img = img.resize(output_size, Image.ANTIALIAS)
             img.save(self.image.path)
 
 

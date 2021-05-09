@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Order, OrderItem, BillingAddress, Shipping
 from USER_APP.models import ProductOpinion
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.views import View
@@ -35,7 +36,8 @@ class ProductDetailView(DetailView):
 	context_object_name = 'product'
 
 	def get_context_data(self, **kwargs):
-		opinions = ProductOpinion.objects.all().order_by('date')
+		product = Product.objects.get(slug = self.kwargs.get('slug'))
+		opinions = product.productopinion_set.all().order_by('date')
 		
 		paginator = Paginator(opinions, 10)
 		page_number = self.request.GET.get('page')
@@ -46,7 +48,7 @@ class ProductDetailView(DetailView):
 		context['page_obj'] = page_obj
 		return context
 
-class OpinionCreateView(CreateView):
+class OpinionCreateView(LoginRequiredMixin, CreateView):
 	model = ProductOpinion
 	fields = ['rating', 'content']
 	template_name = 'SHOP_APP/opinioncreation.html'
