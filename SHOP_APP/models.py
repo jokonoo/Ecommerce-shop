@@ -35,7 +35,6 @@ class Product(models.Model):
             img = img.resize(output_size, Image.ANTIALIAS)
             img.save(self.image.path)
 
-
     @property
     def imageURL(self):
         try:
@@ -67,7 +66,6 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default = 1, null = True, blank = True)
     date_added = models.DateTimeField(auto_now_add = True)
     user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
-
 
     @property
     def get_total(self):
@@ -122,7 +120,6 @@ class Shipping(models.Model):
 
     def __str__(self):
         return f"{self.order.user.username}'s order"
-
 
 class BillingAddress(models.Model):
     user = models.ForeignKey(User, null = True, on_delete = models.SET_NULL)

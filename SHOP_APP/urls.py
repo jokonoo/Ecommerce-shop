@@ -11,5 +11,7 @@ urlpatterns = [
     path('remove-single/<slug>', views.remove_single_item_from_cart, name = 'remove_single'),
     path('cart/', views.cartview, name = 'cart'),
     path('summary/', views.summaryview, name = 'summary_shop'),
-    path('checkout/', views.checkoutview, name = 'checkout_shop')
+    path('checkout/', views.checkoutview, name = 'checkout_shop'),
+    path('filter/', views.ProductFilteringFormView.as_view(), name = 'filter_products'),
+    path('filter/<category>/<lowest>/<highest>/', views.filter_products_view, name = 'filter_products_display')
     ]

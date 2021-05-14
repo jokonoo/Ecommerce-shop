@@ -1,5 +1,6 @@
 from django import forms
-from .models import Order, Shipping, BillingAddress
+from .models import Order, Shipping, BillingAddress, Product
+print(Product.CATEGORIES)
 
 class CheckoutForm(forms.Form):
 	street = forms.CharField(label = 'Enter your address:', max_length = 200)
@@ -26,3 +27,8 @@ class PaymentMethodForm(forms.ModelForm):
 	class Meta:
 		model = Order
 		fields = ['payment_method']
+
+class FilterForm(forms.Form):
+	categories = forms.ChoiceField(label = "Select categories", choices = Product.CATEGORIES, required = False)
+	lowest = forms.IntegerField(label = "Enter min price", required = False) 
+	highest = forms.IntegerField(label = "Enter max price", required = False) 

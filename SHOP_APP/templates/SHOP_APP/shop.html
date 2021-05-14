@@ -19,7 +19,9 @@
     {% endfor %}
   </ul>
 {% endif %}
-
+{% block filtering %}
+<a href="{% url 'filter_products' %}"> Filter products </a>
+{% endblock filtering %}
 {% if page_obj.number == 1 %}
 	{% for key, value in categories %}
 		<p><a href ="{% url 'category_shop' key %}">{{value}}</a></p>

@@ -4,12 +4,12 @@ from USER_APP.models import ProductOpinion
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, FormView
 from django.views import View
 from django.utils import timezone
-from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm
+from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm, FilterForm
 from django.core.paginator import Paginator
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 class ShopView(ListView):
 	paginate_by = 10
@@ -184,3 +184,74 @@ def checkoutview(request):
 			form_2 = PaymentMethodForm(instance = order)
 			context = {'form_1' : form_1, 'form_2' : form_2, 'address' : address, 'order' : order}
 		return render(request, 'SHOP_APP/checkout.html', context)
+
+class ProductFilteringFormView(FormView):
+	form_class = FilterForm
+	template_name = 'SHOP_APP/filterform.html'
+	success_url = reverse_lazy('website_shop')
+
+	def form_valid(self, form):
+		print(form.cleaned_data.get('lowest'))
+		context_data = form.cleaned_data
+		rev = self.send_data_from_view(context_data)
+		return redirect(rev)
+
+	def send_data_from_view(self, context_data):
+		return reverse('filter_products_display', kwargs = {
+			'category' : context_data.get('categories'),
+			'lowest' : context_data.get('lowest'),
+			'highest' : context_data.get('highest')
+			})
+
+	#def get_success_url(self):
+	#	print(form.cleaned_data.get('lowest'))
+	#	return reverse_lazy('website_shop')
+
+def filter_products_view(request, category, lowest, highest):
+	lowest, highest = int(lowest), int(highest)
+	products = []
+	
+	def filtering(products, item = None, many = False):
+		if many == True:
+			for i in item:
+				if i.discount_price:
+					if i.discount_price > lowest and i.discount_price < highest:
+						products.append(i)
+				else:
+					if i.price > lowest and i.price < highest:
+						products.append(i)
+			return products
+		else:
+			if item.discount_price:
+				if item.discount_price > lowest and item.discount_price < highest:
+					products.append(item)
+			else:
+				if item.price > lowest and item.price < highest:
+					products.append(item)
+			return products
+
+
+	if len(Product.objects.filter(category = category)) > 1:
+		products = filtering(
+			item = Product.objects.filter(category = category),
+			many = True,
+			products = products) 
+	
+	elif len(Product.objects.filter(category = category)) == 1:
+		i = Product.objects.get(category = category)
+		products = filtering(
+			item = Product.objects.get(category = category),
+			products = products)
+	
+	else:
+		return render(request, 'SHOP_APP/filterpage.html', context = {'blank' : ''})
+
+	paginator = Paginator(products, 10)
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+
+	return render(request, 'SHOP_APP/filterpage.html', context = {'products' : products, 'page_obj' : page_obj})
+
+
+
+    
