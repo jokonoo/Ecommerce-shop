@@ -59,7 +59,6 @@ class OpinionCreateView(LoginRequiredMixin, CreateView):
 		return super().form_valid(form)
 
 	def get_success_url(self):
-		print(Product.objects.get(pk = self.kwargs.get('product')).slug)
 		return reverse('product_details', kwargs = {'slug' : Product.objects.get(pk = self.kwargs.get('product')).slug})
 
 
@@ -191,10 +190,11 @@ class ProductFilteringFormView(FormView):
 	success_url = reverse_lazy('website_shop')
 
 	def form_valid(self, form):
-		print(form.cleaned_data.get('lowest'))
 		context_data = form.cleaned_data
-		rev = self.send_data_from_view(context_data)
-		return redirect(rev)
+		for k,v in context_data.items():
+			if v == None:
+				context_data[k] = 0
+		return redirect(self.send_data_from_view(context_data))
 
 	def send_data_from_view(self, context_data):
 		return reverse('filter_products_display', kwargs = {
@@ -203,11 +203,9 @@ class ProductFilteringFormView(FormView):
 			'highest' : context_data.get('highest')
 			})
 
-	#def get_success_url(self):
-	#	print(form.cleaned_data.get('lowest'))
-	#	return reverse_lazy('website_shop')
-
 def filter_products_view(request, category, lowest, highest):
+	if highest == '0':
+		highest = '10000'
 	lowest, highest = int(lowest), int(highest)
 	products = []
 	
@@ -215,18 +213,18 @@ def filter_products_view(request, category, lowest, highest):
 		if many == True:
 			for i in item:
 				if i.discount_price:
-					if i.discount_price > lowest and i.discount_price < highest:
+					if i.discount_price >= lowest and i.discount_price <= highest:
 						products.append(i)
 				else:
-					if i.price > lowest and i.price < highest:
+					if i.price >= lowest and i.price <= highest:
 						products.append(i)
 			return products
 		else:
 			if item.discount_price:
-				if item.discount_price > lowest and item.discount_price < highest:
+				if item.discount_price >= lowest and item.discount_price < highest:
 					products.append(item)
 			else:
-				if item.price > lowest and item.price < highest:
+				if item.price >= lowest and item.price <= highest:
 					products.append(item)
 			return products
 
@@ -244,14 +242,10 @@ def filter_products_view(request, category, lowest, highest):
 			products = products)
 	
 	else:
-		return render(request, 'SHOP_APP/filterpage.html', context = {'blank' : ''})
+		return render(request, 'SHOP_APP/filterpage.html', context = {'blank' : True})
 
 	paginator = Paginator(products, 10)
 	page_number = request.GET.get('page')
 	page_obj = paginator.get_page(page_number)
 
 	return render(request, 'SHOP_APP/filterpage.html', context = {'products' : products, 'page_obj' : page_obj})
-
-
-
-    

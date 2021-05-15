@@ -3,4 +3,7 @@
 	{{block.super}}
 	{% block filtering %}
 	{% endblock filtering %}
+	{% if blank == True %}
+		<p> No results </p>
+	{% endif %}
 {% endblock content %}
