@@ -47,7 +47,11 @@ INSTALLED_APPS = [
     'SHOP_APP.apps.ShopAppConfig',
     'rest_framework',
     'API.apps.ApiConfig',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +69,10 @@ ROOT_URLCONF = 'WEBSITE_PROJECT.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+        os.path.join(BASE_DIR, 'templates'),
+        os.path.join(BASE_DIR, 'templates', 'allauth'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,6 +97,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 
 # Password validation
@@ -137,7 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 MEDIA_URL = '/images/'
 
 LOGIN_REDIRECT_URL = 'user-profile'
-LOGIN_URL = 'website-login'
+LOGIN_URL = 'account_login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

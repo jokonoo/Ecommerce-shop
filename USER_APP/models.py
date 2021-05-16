@@ -8,7 +8,7 @@ from SHOP_APP.models import Product
 from PIL import Image
 
 class Profile(models.Model):
-	user = models.OneToOneField(User, on_delete = models.CASCADE)
+	user = models.OneToOneField(User, on_delete = models.SET_NULL, null = True)
 	nickname = models.CharField(max_length = 100)
 	description = models.CharField(max_length = 500, blank = True, null = True)
 	picture = models.ImageField(upload_to = 'ProfilePictures', default = 'default.jpg', null = True)
@@ -28,7 +28,7 @@ class Profile(models.Model):
 
 
 class Comment(models.Model):
-	author = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+	author = models.ForeignKey(User, on_delete = models.SET_NULL, null = True)
 	news = models.ForeignKey(News, on_delete = models.CASCADE, null = True, default = None)
 	content = models.TextField()
 	date = models.DateTimeField(default = timezone.now)

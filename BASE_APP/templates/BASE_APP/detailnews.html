@@ -18,7 +18,11 @@
 		<p>There are currently no comments, <a href = "{% url 'website-login' %}">login</a> to add first.</p>
 	{% else %}
 		{% for item in page_obj %}
+			{% if not item.author %}
+			<h4>Deleted user</h4>
+			{% else %}
 			<h4>{{item.author.username}} </h4>
+			{% endif %}
 			<p>{{item.content}}</p>
 			<p>{{item.date}}</p>
 			{% if item.author == user %}

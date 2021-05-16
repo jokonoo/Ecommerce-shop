@@ -1,4 +1,4 @@
-#Hello World
+# Hello World
 
 ## E-commerce shop project
 
@@ -21,3 +21,5 @@ All available options at this moment are:
 -Filtering items by price and category
 -And a few more...
 ```
+
+### Currently implementing django-allauth for registration confirmation, and all auth logic.
