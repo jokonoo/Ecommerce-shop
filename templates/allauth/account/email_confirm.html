@@ -1,0 +1,12 @@
+{% extends 'BASE_APP/index.html' %}
+{% block content %}
+	<h1>Confirm E-mail Address</h1>
+	{% if confirmation %}
+		<p>Please confirm that {{confirmation.email_address.email}} is an e-mail address for user {{confirmation.email_address.user}}.</p>
+		<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+		{% csrf_token %}
+		{{form.as_p}}
+		<button type="submit">Confirm</button>
+		</form>
+	{% endif %}
+{% endblock content %}

@@ -11,7 +11,7 @@ class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete = models.SET_NULL, null = True)
 	nickname = models.CharField(max_length = 100)
 	description = models.CharField(max_length = 500, blank = True, null = True)
-	picture = models.ImageField(upload_to = 'ProfilePictures', default = 'default.jpg', null = True)
+	picture = models.ImageField(upload_to = 'ProfilePictures', default = 'default_profile.jpg', null = True)
 
 	def __str__(self):
 		return self.user.username
@@ -42,7 +42,7 @@ class ProductOpinion(models.Model):
 	('4', 4),
 	('5', 5)]
 
-	author = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+	author = models.ForeignKey(User, on_delete = models.SET_NULL, null = True)
 	product = models.ForeignKey(Product, on_delete = models.DO_NOTHING)
 	rating = models.CharField(max_length = 1, choices = RATINGS)
 	content = models.TextField()

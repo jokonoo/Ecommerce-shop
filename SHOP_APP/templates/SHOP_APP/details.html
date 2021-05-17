@@ -12,7 +12,11 @@
 	<h2> Opinions:</h2>
 	<p><a href = "{% url 'create_opinion' product.pk %}">Click here to add your opinion</a></p> 
 	{% for item in page_obj %}
-		<h3>{{item.author.username}}</h3>
+		{% if not item.author %}
+			<h3>Deleted user</h3>
+		{% else %}
+			<h3>{{item.author.username}} </h3>
+		{% endif %}
 		<h4>Rated: <a> {{item.rating}} </a> </h4>
 		<p>{{item.content}}</p>
 		<p>{{item.date}}</p>
