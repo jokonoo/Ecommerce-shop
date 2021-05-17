@@ -109,6 +109,15 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 60
+
+ACCOUNT_LOGOUT_REDIRECT_URL ='account_login'
+
+ACCOUNT_FORMS = {
+'signup': 'USER_APP.forms.CustomSignupForm',
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
