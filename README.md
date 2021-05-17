@@ -23,3 +23,5 @@ All available options at this moment are:
 ```
 
 ### Currently implementing django-allauth for registration confirmation, and all auth logic.
+
+At first i was using django generic views like generic login, generic signup, but i decided to use django-allauth library because it's really helpful with all it's authentication logic that i would have to write on my own every time. 
