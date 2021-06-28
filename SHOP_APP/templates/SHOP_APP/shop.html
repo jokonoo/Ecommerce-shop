@@ -19,14 +19,13 @@
     {% endfor %}
   </ul>
 {% endif %}
+	<a href="{% url 'website_shop' %}"> All products </a>
+{% for item in categories %}
+	<p><a href="{% url 'filtered_shop' item.slug %}">{{item.name}}</a></p>
+{% endfor %}
 {% block filtering %}
 <a href="{% url 'filter_products' %}"> Filter products </a>
 {% endblock filtering %}
-{% if page_obj.number == 1 %}
-	{% for key, value in categories %}
-		<p><a href ="{% url 'category_shop' key %}">{{value}}</a></p>
-	{% endfor %}
-{% endif %}
 {% for product in page_obj %}
 	<a href= "{% url 'product_details' product.slug %}"><img src={{product.image.url}}></img></a>
 	<h1><a href= "{% url 'product_details' product.slug %}">{{product.name}}</a></h1>

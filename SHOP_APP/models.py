@@ -1,7 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
+from django.utils.text import slugify
 from PIL import Image
+
+class Category(models.Model):
+    name = models.CharField(max_length = 200, unique = True, db_index = True)
+    slug = models.SlugField(max_length = 200, unique = True, db_index = True, blank = True)
+
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+            super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
 
     CATEGORIES = [
@@ -11,16 +31,17 @@ class Product(models.Model):
     ('C4', 'Category4')]
     
     name = models.CharField(max_length = 200, null = True)
-    price = models.FloatField()
-    discount_price = models.FloatField(blank = True, null = True)
+    price = models.DecimalField(max_digits = 8, decimal_places = 2)
+    discount_price = models.DecimalField(max_digits = 8, decimal_places = 2, blank = True, null = True)
+    available = models.BooleanField(default = True)
     digital = models.BooleanField(default = False, null = True, blank = True)
     image = models.ImageField(upload_to = 'ProductImages' , default = 'default.jpg', null = True, blank = True)
     slug = models.SlugField()
     description = models.TextField(null = True, blank = True)
     category = models.CharField(max_length = 2, choices = CATEGORIES, default = 'C1')
+    category1 = models.ForeignKey(Category, db_index = True, related_name = 'products', on_delete = models.CASCADE, blank = True, null = True)
     quantity = models.IntegerField(default = 0)
     api_link = models.TextField(blank = True, null = True)
-    item_id = models.IntegerField(blank = True, null = True)
 
     def save(self, *args, **kwargs):
         #self.api_link ='http://127.0.0.1:8000'+reverse('api_detail_view', kwargs = {

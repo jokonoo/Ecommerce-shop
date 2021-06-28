@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Order, OrderItem, BillingAddress, Shipping
+from .models import Product, Order, OrderItem, BillingAddress, Shipping, Category
 from USER_APP.models import ProductOpinion
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,24 +11,40 @@ from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, Payment
 from django.core.paginator import Paginator
 from django.urls import reverse, reverse_lazy
 
-class ShopView(ListView):
-	paginate_by = 10
-	model = Product
-	template_name = 'SHOP_APP/shop.html'
+def shop_view(request, category_slug = None):
+	category = None
+	categories = Category.objects.all()
+	products = Product.objects.filter(available = True)
+	if category_slug:
+		category = get_object_or_404(Category, slug = category_slug)
+		products = products.filter(category1 = category)
+	paginator = Paginator(products, 10)
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+	return render(request, 'SHOP_APP/shop.html',
+		{'category' : category,
+		 'categories' : categories,
+		 'page_obj' : page_obj})
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['categories'] = Product.CATEGORIES
-		return context
 
-class CategoryView(ListView):
-	paginate_by = 10
-	model = Product
-	template_name = 'SHOP_APP/categorypage.html'
+#class ShopView(ListView):
+#	paginate_by = 10
+#	model = Product
+#	template_name = 'SHOP_APP/shop.html'
+#
+#	def get_context_data(self, **kwargs):
+#		context = super().get_context_data(**kwargs)
+#		context['products'] = Product.objects.filter(available = True)
+#		return context
 
-	def get_queryset(self):
-		context = Product.objects.filter(category = self.kwargs.get('category'))
-		return context
+#class CategoryView(ListView):
+#	paginate_by = 10
+#	model = Product
+#	template_name = 'SHOP_APP/categorypage.html'
+#
+#	def get_queryset(self):
+#		context = Product.objects.filter(category = self.kwargs.get('category'))
+#		return context
 
 class ProductDetailView(DetailView):
 	model = Product
