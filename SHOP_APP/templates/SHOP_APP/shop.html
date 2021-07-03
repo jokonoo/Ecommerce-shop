@@ -19,6 +19,7 @@
     {% endfor %}
   </ul>
 {% endif %}
+	<h2><p>Categories</p></h2>
 	<a href="{% url 'website_shop' %}"> All products </a>
 {% for item in categories %}
 	<p><a href="{% url 'filtered_shop' item.slug %}">{{item.name}}</a></p>
@@ -26,14 +27,20 @@
 {% block filtering %}
 <a href="{% url 'filter_products' %}"> Filter products </a>
 {% endblock filtering %}
+{% if category %}
+	<h1> {{category}} </h1>
+{% else %}
+	<h1> All products </h1>
+{% endif %}
 {% for product in page_obj %}
-	<a href= "{% url 'product_details' product.slug %}"><img src={{product.image.url}}></img></a>
-	<h1><a href= "{% url 'product_details' product.slug %}">{{product.name}}</a></h1>
+	<a href= "{{product.get_absolute_url}}"><img src={{product.image.url}}></img></a>
+	<h1><a href= "{{product.get_absolute_url}}">{{product.name}}</a></h1>
 	{% if product.discount_price %}
 		<h3>{{product.discount_price}}$</h3>
 	{% else %}
 		<h3>{{product.price}}$</h3>
 	{% endif %}
+	{% if product.description %} {{product.description|truncatewords:15|linebreaks}} {% endif %}
 {% endfor %}
 
 {% if paginator.count > paginator.per_page %}

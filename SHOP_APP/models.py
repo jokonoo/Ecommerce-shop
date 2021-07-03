@@ -8,7 +8,6 @@ class Category(models.Model):
     name = models.CharField(max_length = 200, unique = True, db_index = True)
     slug = models.SlugField(max_length = 200, unique = True, db_index = True, blank = True)
 
-
     class Meta:
         ordering = ('name',)
         verbose_name = 'category'
@@ -55,6 +54,9 @@ class Product(models.Model):
         if img.height > 256 or img.width > 256 or img.width < 256 or img.height <256:
             img = img.resize(output_size, Image.ANTIALIAS)
             img.save(self.image.path)
+    
+    def __str__(self):
+        return self.name
 
     @property
     def imageURL(self):
@@ -78,6 +80,9 @@ class Product(models.Model):
         return reverse('remove_from_cart', kwargs = {
             'slug' : self.slug
     })
+
+    def get_absolute_url(self):
+        return reverse('product_details', args = [self.slug])
 
     def __str__(self):
         return self.name

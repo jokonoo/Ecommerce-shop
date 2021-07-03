@@ -26,7 +26,6 @@ def shop_view(request, category_slug = None):
 		 'categories' : categories,
 		 'page_obj' : page_obj})
 
-
 #class ShopView(ListView):
 #	paginate_by = 10
 #	model = Product
