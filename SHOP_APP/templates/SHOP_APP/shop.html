@@ -12,13 +12,6 @@
 </ul>
 {% endblock nav %}
 {% block content %}
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
 	<h2><p>Categories</p></h2>
 	<a href="{% url 'website_shop' %}"> All products </a>
 {% for item in categories %}

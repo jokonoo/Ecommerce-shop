@@ -46,6 +46,8 @@ class Product(models.Model):
         #self.api_link ='http://127.0.0.1:8000'+reverse('api_detail_view', kwargs = {
         #    'slug' : self.slug
         #    })
+        if not self.slug:
+            self.slug = slugify(self.name)
         super().save()
 
         img = Image.open(self.image.path)

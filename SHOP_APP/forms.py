@@ -1,6 +1,13 @@
 from django import forms
 from .models import Order, Shipping, BillingAddress, Product, Category
 
+class AddToCartForm(forms.Form):
+	CHOICES = [(i, str(i)) for i in range(1,21)] 
+	quantity = forms.TypedChoiceField(
+		choices = CHOICES,
+		coerce = int)
+	"""Using TypedChoiceField to make sure that quantity key is returning int values"""
+
 class CheckoutForm(forms.Form):
 	street = forms.CharField(label = 'Enter your address:', max_length = 200)
 	apartment = forms.CharField(label = 'Enter number of your apartment:', max_length = 200)

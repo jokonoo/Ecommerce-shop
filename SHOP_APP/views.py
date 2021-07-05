@@ -6,10 +6,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, FormView
 from django.views import View
+from django.views.decorators.http import require_POST
 from django.utils import timezone
-from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm, FilterForm
+from .forms import CheckoutForm, ShippingUpdateForm, BillingAddressForm, PaymentMethodForm, FilterForm, AddToCartForm
 from django.core.paginator import Paginator
 from django.urls import reverse, reverse_lazy
+from cart.cart_conf import Cart
 
 def shop_view(request, category_slug = None):
 	category = None
@@ -50,6 +52,7 @@ class ProductDetailView(DetailView):
 	template_name = 'SHOP_APP/details.html'
 	context_object_name = 'product'
 
+
 	def get_context_data(self, **kwargs):
 		product = Product.objects.get(slug = self.kwargs.get('slug'))
 		opinions = product.productopinion_set.all().order_by('date')
@@ -61,6 +64,7 @@ class ProductDetailView(DetailView):
 		context = super().get_context_data(**kwargs)
 		context['opinions'] = opinions
 		context['page_obj'] = page_obj
+		context['cart_add_form'] = AddToCartForm()
 		return context
 
 class OpinionCreateView(LoginRequiredMixin, CreateView):
@@ -76,46 +80,69 @@ class OpinionCreateView(LoginRequiredMixin, CreateView):
 	def get_success_url(self):
 		return reverse('product_details', kwargs = {'slug' : Product.objects.get(pk = self.kwargs.get('product')).slug})
 
+@require_POST
+def add_to_cart(request, product_id, product_slug):
+	new_cart = Cart(request)
+	product = get_object_or_404(Product, id = product_id, slug = product_slug)
+	cart_form = AddToCartForm(request.POST)
+	if cart_form.is_valid():
+		quantity = cart_form.cleaned_data.get('quantity')
+		new_cart.add(product, quantity)
+		messages.info(request, 'Added product to cart')
+	return redirect('website_shop')
 
-@login_required
-def add_to_cart(request, slug):
-	product = get_object_or_404(Product, slug = slug)
-	order_item, created = OrderItem.objects.get_or_create(product = product, user = request.user)
-	order_qs = Order.objects.filter(user = request.user, complete = False)
-	if order_qs.exists():
-		order = order_qs[0]
-		if order.products.filter(product__slug = product.slug).exists():
-			order_item.quantity += 1
-			order_item.save()
-			messages.info(request, 'Updated the item quantity')
-			return redirect('cart')
-		else:
-			order.products.add(order_item)
-			messages.info(request, 'Added new item to cart')
-			return redirect('cart')
-	else: 
-		order = Order.objects.create(user = request.user, complete = False)
-		order.products.add(order_item)
-		messages.info(request, 'Added new item to cart')
-		return redirect('product_details', slug = slug)
+@require_POST
+def remove_from_cart(request, product_id, product_slug):
+	cart = Cart(request)
+	product = get_object_or_404(Product, id = product_id, slug = product_slug)
+	cart.remove(product)
+	messages.info(request, 'Removed product from cart')
+	return redirect('website_shop')
 
-@login_required
-def remove_from_cart(request, slug):
-	item = get_object_or_404(Product, slug = slug)
-	order_qs = Order.objects.filter(user = request.user, complete = False)
-	if order_qs.exists():
-		order = order_qs[0]
-		if order.products.filter(product__slug = item.slug).exists():
-			order_item = OrderItem.objects.filter(product = item, user = request.user)[0]
-			order_item.delete()
-			messages.warning(request, 'Items removed from cart.')
-			return redirect('cart')
-		else:
-			messages.warning(request, 'Item does not exist.')
-			return redirect('cart')
-	else :
-		messages.warning(request, 'Order does not exist.')
-		return redirect('cart')
+def cartview(request):
+	cart_object = Cart(request)
+	return render(request, 'SHOP_APP/cart.html', {'cart_object': cart_object})
+
+
+#@login_required
+#def add_to_cart(request, slug):
+#	product = get_object_or_404(Product, slug = slug)
+#	order_item, created = OrderItem.objects.get_or_create(product = product, user = request.user)
+#	order_qs = Order.objects.filter(user = request.user, complete = False)
+#	if order_qs.exists():
+#		order = order_qs[0]
+#		if order.products.filter(product__slug = product.slug).exists():
+#			order_item.quantity += 1
+#			order_item.save()
+#			messages.info(request, 'Updated the item quantity')
+#			return redirect('cart')
+#		else:
+#			order.products.add(order_item)
+#			messages.info(request, 'Added new item to cart')
+#			return redirect('cart')
+#	else: 
+#		order = Order.objects.create(user = request.user, complete = False)
+#		order.products.add(order_item)
+#		messages.info(request, 'Added new item to cart')
+#		return redirect('product_details', slug = slug)
+
+#@login_required
+#def remove_from_cart(request, slug):
+#	item = get_object_or_404(Product, slug = slug)
+#	order_qs = Order.objects.filter(user = request.user, complete = False)
+#	if order_qs.exists():
+#		order = order_qs[0]
+#		if order.products.filter(product__slug = item.slug).exists():
+#			order_item = OrderItem.objects.filter(product = item, user = request.user)[0]
+#			order_item.delete()
+#			messages.warning(request, 'Items removed from cart.')
+#			return redirect('cart')
+#		else:
+#			messages.warning(request, 'Item does not exist.')
+#			return redirect('cart')
+#	else :
+#		messages.warning(request, 'Order does not exist.')
+#		return redirect('cart')
 
 @login_required
 def remove_single_item_from_cart(request, slug):
@@ -139,15 +166,15 @@ def remove_single_item_from_cart(request, slug):
 		messages.warning(request, 'Order does not exist')
 		return redirect('cart')
 
-@login_required
-def cartview(request):
-	try:
-		order = Order.objects.get(user = request.user , complete = False)
-		context = {'order' : order}
-		return render(request, 'SHOP_APP/cart.html', context)
-	except Order.DoesNotExist:
-		messages.warning(request, 'Your cart is empty.')
-		return redirect('website_shop')
+#@login_required
+#def cartview(request):
+#	try:
+#		order = Order.objects.get(user = request.user , complete = False)
+#		context = {'order' : order}
+#		return render(request, 'SHOP_APP/cart.html', context)
+#	except Order.DoesNotExist:
+#		messages.warning(request, 'Your cart is empty.')
+#		return redirect('website_shop')
 
 
 @login_required

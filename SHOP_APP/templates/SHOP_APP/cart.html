@@ -1,28 +1,15 @@
 {% extends 'SHOP_APP/shop.html' %}
 {% block content %}
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
 <h1> Order summary </h1>
-{% for item in order.products.all %}
+{% for item in cart_object %}
 	<h3><p>{{item.product.name}}</p></h3>
-	{% if item.product.discount_price %}
-		<p> Price:{{item.product.discount_price}}</p>
-	{% else %}
-		<p> Price:{{item.product.price}}</p>
-	{% endif %}
-	<p> Quantity:{{item.quantity}}
-	<p> Total price of an item: {{item.get_total}}
-		<a href ="{% url 'add_to_cart' item.product.slug %}">+</a>
-		<a href ="{% url 'remove_single' item.product.slug %}">-</a>
-		<a href ="{% url 'remove_from_cart' item.product.slug %}"> Remove all items </a>
+	<p> Price: {{item.product.price}}</p>
+	<p> Quantity: {{item.quantity}}</p>
+	<p> Total Price: {{item.total_price}}
+		{#<a href ="{% url 'add_to_cart' item.product.slug %}">+</a><a href ="{% url 'remove_single' item.product.slug %}">-</a><a href ="{% url 'remove_from_cart' item.product.slug %}"> Remove all items </a>#}
 {% endfor %}
-<h2> TOTAL QUANTITY OF ITEMS: {{ order.get_cart_items }} </h2>
-<h2> TOTAL COST OF ITEMS: {{ order.get_cart_total }} </h2>
+
+<h2> TOTAL PRICE OF ITEMS: {{ cart_object.get_total_price }} </h2>
 <h3><a href = "{% url 'summary_shop' %}">Go to summary</a></h3>
 <h3><a href = "{% url 'website_shop' %}">Keep shopping</a></h3>
 {% endblock content %}

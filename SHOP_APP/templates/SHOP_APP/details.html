@@ -8,7 +8,14 @@
 		<h2>{{product.price}}$</h2>
 	{% endif %}
 	<p>{{product.description}}</p>
-	<a href = "{% url 'add_to_cart' product.slug %}"> Add to cart </a>
+	<form method ='POST' action="{% url 'add_to_cart' product_id=product.id product_slug=product.slug %}">
+		{% csrf_token %}
+		{{cart_add_form}}
+		<button type = 'submit'> Add to cart </button>
+	</form>
+		
+
+	{#<a href = "{% url 'add_to_cart' product_id=product.id product_slug=product.slug %}"> Add to cart </a>#}
 	<h2> Opinions:</h2>
 	<p><a href = "{% url 'create_opinion' product.pk %}">Click here to add your opinion</a></p> 
 	{% for item in page_obj %}
