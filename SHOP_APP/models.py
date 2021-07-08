@@ -112,10 +112,15 @@ class Order(models.Model):
     ('P', 'Paypal')]
 
     user = models.ForeignKey(User, null = True, blank = True, on_delete = models.SET_NULL)
+    first_name = models.CharField(max_length = 100)
+    last_name = models.CharField(max_length = 100)
+    address = models.CharField(max_length = 200)
+    postal_code = models.CharField(max_length = 100)
+    city = models.CharField(max_length = 100)
     date_ordered = models.DateTimeField(auto_now_add = True)
-    complete = models.BooleanField(default=False, null = True, blank = True)
-    transaction_id = models.CharField(max_length = 200, null = True)
-    products = models.ManyToManyField(OrderItem)
+    complete = models.BooleanField(default=False)
+    #transaction_id = models.CharField(max_length = 200, null = True)
+    #products = models.ManyToManyField(OrderItem)
     payment_method = models.CharField(max_length = 1, choices = PAYMENT_METHODS)
     total_cost = models.IntegerField(default = 0, null = True, blank = True)
 

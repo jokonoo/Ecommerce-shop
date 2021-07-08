@@ -15,7 +15,7 @@ class Cart:
 			cart = self.session[CART_SESSION_KEY] = {}
 		self.cart = cart
 	
-	def add(self, product, quantity):
+	def add(self, product, quantity, update):
 		product_id = str(product.id)
 		"""Checking if id(converted to string) doesn't exists in self.cart dictionary.
 		If it does not, then we are adding new key equal to product_id,
@@ -27,8 +27,12 @@ class Cart:
 			else:
 				price = product.price
 			self.cart[product_id] = {'quantity' : 0, 'price' : str(price)}
+		
+		if update:
+			self.cart[product_id]['quantity'] = quantity
 		else:
 			self.cart[product_id]['quantity'] += quantity
+		
 		self.save()
 
 	def save(self):

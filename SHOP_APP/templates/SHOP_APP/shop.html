@@ -6,6 +6,7 @@
 		<li><a href= "{% url 'user-profile' %}" >Profile</a></li>
 		<li><a href= "{% url 'website-logout' %}" >Log out</a></li>  
 	{% else %}
+		<li><a href= "{% url 'cart' %}" >Cart</a></li>
 		<li><a href= "{% url 'website-register' %}" >Sign up</a></li>
 		<li><a href= "{% url 'website-login' %}" >Log in</a></li>
 	{% endif %}

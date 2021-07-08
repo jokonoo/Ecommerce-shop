@@ -4,8 +4,13 @@ from .models import Order, Shipping, BillingAddress, Product, Category
 class AddToCartForm(forms.Form):
 	CHOICES = [(i, str(i)) for i in range(1,21)] 
 	quantity = forms.TypedChoiceField(
+		label = 'Select quantity',
 		choices = CHOICES,
 		coerce = int)
+	update = forms.BooleanField(
+		required = False,
+		initial = False,
+		widget = forms.HiddenInput)
 	"""Using TypedChoiceField to make sure that quantity key is returning int values"""
 
 class CheckoutForm(forms.Form):

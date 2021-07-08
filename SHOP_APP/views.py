@@ -87,20 +87,25 @@ def add_to_cart(request, product_id, product_slug):
 	cart_form = AddToCartForm(request.POST)
 	if cart_form.is_valid():
 		quantity = cart_form.cleaned_data.get('quantity')
-		new_cart.add(product, quantity)
+		update = cart_form.cleaned_data.get('update')
+		new_cart.add(product, quantity, update)
 		messages.info(request, 'Added product to cart')
-	return redirect('website_shop')
+	return redirect('cart')
 
-@require_POST
-def remove_from_cart(request, product_id, product_slug):
+def remove_from_cart(request, product_id, product_slug, all = False):
 	cart = Cart(request)
-	product = get_object_or_404(Product, id = product_id, slug = product_slug)
-	cart.remove(product)
-	messages.info(request, 'Removed product from cart')
-	return redirect('website_shop')
+	if not all:
+		product = get_object_or_404(Product, id = product_id, slug = product_slug)
+		cart.remove(product)
+		messages.info(request, 'Removed product from cart')
+	else: 
+		cart.clear()
+	return redirect('cart')
 
 def cartview(request):
 	cart_object = Cart(request)
+	for item in cart_object:
+		item['quantity_form'] = AddToCartForm(initial={'quantity' : item['quantity'], 'update' : True})
 	return render(request, 'SHOP_APP/cart.html', {'cart_object': cart_object})
 
 
