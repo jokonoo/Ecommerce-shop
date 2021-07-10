@@ -19,7 +19,7 @@ def shop_view(request, category_slug = None):
 	products = Product.objects.filter(available = True)
 	if category_slug:
 		category = get_object_or_404(Category, slug = category_slug)
-		products = products.filter(category1 = category)
+		products = products.filter(categories = category)
 	paginator = Paginator(products, 10)
 	page_number = request.GET.get('page')
 	page_obj = paginator.get_page(page_number)
@@ -257,7 +257,7 @@ def filter_products_view(request, category, lowest, highest):
 	products = []
 	category = (category,)
 	
-	def filtering(products, item = None, many = False):
+	def filtering(products, item = None, many = False, category = str(category[0])):
 		if many == True:
 			for i in item:
 				if i.discount_price:
@@ -266,27 +266,33 @@ def filter_products_view(request, category, lowest, highest):
 				else:
 					if i.price >= lowest and i.price <= highest:
 						products.append(i)
-			return products
+			return products, category
 		else:
 			if item.discount_price:
+				print(item.discount_price < highest)
+				print(item.discount_price >= lowest)
 				if item.discount_price >= lowest and item.discount_price < highest:
 					products.append(item)
+				else:
+					category = 'Products not found'
 			else:
 				if item.price >= lowest and item.price <= highest:
 					products.append(item)
-			return products
-
+			return products, category
+	
 	if len(Product.objects.filter(categories__name__in = category)) > 1:
-		products = filtering(
+		products, category = filtering(
 			item = Product.objects.filter(categories__name__in = category),
 			many = True,
-			products = products) 
+			products = products
+			) 
 	
 	elif len(Product.objects.filter(categories__name__in = category)) == 1:
 		i = Product.objects.get(categories__name__in = category)
-		products = filtering(
-			item = Product.objects.filter(categories__name in category)[0],
-			products = products)
+		products, category = filtering(
+			item = Product.objects.get(categories__name__in = category),
+			products = products
+			)
 	
 	else:	
 		return render(request, 'SHOP_APP/filterpage.html', context = {'blank' : True})
@@ -294,5 +300,7 @@ def filter_products_view(request, category, lowest, highest):
 	paginator = Paginator(products, 10)
 	page_number = request.GET.get('page')
 	page_obj = paginator.get_page(page_number)
-
-	return render(request, 'SHOP_APP/filterpage.html', context = {'products' : products, 'page_obj' : page_obj})
+	#print(Product.objects.get(categories__name__in = category))
+	#print(products)
+	#print(category)
+	return render(request, 'SHOP_APP/filterpage.html', context = {'products' : products, 'page_obj' : page_obj, 'category' : category})
