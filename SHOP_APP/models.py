@@ -89,22 +89,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-class OrderItem(models.Model):
-    product = models.ForeignKey(Product, null = True, on_delete = models.CASCADE)
-    quantity = models.IntegerField(default = 1, null = True, blank = True)
-    date_added = models.DateTimeField(auto_now_add = True)
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
-
-    @property
-    def get_total(self):
-        if self.product.discount_price:
-            return self.product.discount_price * self.quantity
-        else:
-            return self.product.price * self.quantity
-    
-    def __str__(self):
-        return f'Name: {self.product.name}, Quantity: {self.quantity}'
-
 class Order(models.Model):
     
     PAYMENT_METHODS = [
@@ -118,15 +102,19 @@ class Order(models.Model):
     postal_code = models.CharField(max_length = 100, blank = True)
     city = models.CharField(max_length = 100, blank = True)
     date_ordered = models.DateTimeField(auto_now_add = True)
-    complete = models.BooleanField(default=False)
+    date_completed = models.DateTimeField(auto_now = True, blank = True)
+    completed = models.BooleanField(default=False)
     #transaction_id = models.CharField(max_length = 200, null = True)
     #products = models.ManyToManyField(OrderItem)
     payment_method = models.CharField(max_length = 1, choices = PAYMENT_METHODS)
     total_cost = models.IntegerField(default = 0, null = True, blank = True)
 
+    class Meta:
+        ordering = ('-date_ordered',)
+
     @property
     def get_cart_total(self):
-        orderitems = self.products.all()
+        orderitems = self.ordered_items.all()
         total = sum([item.get_total for item in orderitems])
         return total
 
@@ -138,6 +126,22 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.transaction_id)
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name = 'ordered_items', on_delete = models.CASCADE, blank = True, null = True)
+    product = models.ForeignKey(Product, null = True, on_delete = models.CASCADE)
+    quantity = models.IntegerField(default = 1, null = True, blank = True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+
+    @property
+    def get_total(self):
+        if self.product.discount_price:
+            return self.product.discount_price * self.quantity
+        else:
+            return self.product.price * self.quantity
+    
+    def __str__(self):
+        return f'Name: {self.product.name}, Quantity: {self.quantity}'
 
 class Shipping(models.Model):
 
