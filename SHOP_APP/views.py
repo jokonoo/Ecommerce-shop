@@ -255,6 +255,7 @@ def filter_products_view(request, category, lowest, highest):
 		highest = '10000'
 	lowest, highest = int(lowest), int(highest)
 	products = []
+	category = (category,)
 	
 	def filtering(products, item = None, many = False):
 		if many == True:
@@ -275,20 +276,19 @@ def filter_products_view(request, category, lowest, highest):
 					products.append(item)
 			return products
 
-
-	if len(Product.objects.filter(category = category)) > 1:
+	if len(Product.objects.filter(categories__name__in = category)) > 1:
 		products = filtering(
-			item = Product.objects.filter(category = category),
+			item = Product.objects.filter(categories__name__in = category),
 			many = True,
 			products = products) 
 	
-	elif len(Product.objects.filter(category = category)) == 1:
-		i = Product.objects.get(category = category)
+	elif len(Product.objects.filter(categories__name__in = category)) == 1:
+		i = Product.objects.get(categories__name__in = category)
 		products = filtering(
-			item = Product.objects.get(category = category),
+			item = Product.objects.filter(categories__name in category)[0],
 			products = products)
 	
-	else:
+	else:	
 		return render(request, 'SHOP_APP/filterpage.html', context = {'blank' : True})
 
 	paginator = Paginator(products, 10)

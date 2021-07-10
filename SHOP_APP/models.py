@@ -23,11 +23,11 @@ class Category(models.Model):
 
 class Product(models.Model):
 
-    CATEGORIES = [
-    ('C1', 'Category1'),
-    ('C2', 'Category2'),
-    ('C3', 'Category3'),
-    ('C4', 'Category4')]
+    #CATEGORIES = [
+    #('C1', 'Category1'),
+    #('C2', 'Category2'),
+    #('C3', 'Category3'),
+    #('C4', 'Category4')]
     
     name = models.CharField(max_length = 200, null = True)
     price = models.DecimalField(max_digits = 8, decimal_places = 2)
@@ -37,8 +37,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to = 'ProductImages' , default = 'default.jpg', null = True, blank = True)
     slug = models.SlugField()
     description = models.TextField(null = True, blank = True)
-    category = models.CharField(max_length = 2, choices = CATEGORIES, default = 'C1')
-    category1 = models.ForeignKey(Category, db_index = True, related_name = 'products', on_delete = models.CASCADE, blank = True, null = True)
+    #category = models.CharField(max_length = 2, choices = CATEGORIES, default = 'C1')
+    categories = models.ForeignKey(Category, db_index = True, related_name = 'products', on_delete = models.CASCADE, blank = True, null = True)
     quantity = models.IntegerField(default = 0)
     api_link = models.TextField(blank = True, null = True)
 
@@ -112,11 +112,11 @@ class Order(models.Model):
     ('P', 'Paypal')]
 
     user = models.ForeignKey(User, null = True, blank = True, on_delete = models.SET_NULL)
-    first_name = models.CharField(max_length = 100)
-    last_name = models.CharField(max_length = 100)
-    address = models.CharField(max_length = 200)
-    postal_code = models.CharField(max_length = 100)
-    city = models.CharField(max_length = 100)
+    first_name = models.CharField(max_length = 100, blank = True)
+    last_name = models.CharField(max_length = 100, blank = True)
+    address = models.CharField(max_length = 200, blank = True)
+    postal_code = models.CharField(max_length = 100, blank = True)
+    city = models.CharField(max_length = 100, blank = True)
     date_ordered = models.DateTimeField(auto_now_add = True)
     complete = models.BooleanField(default=False)
     #transaction_id = models.CharField(max_length = 200, null = True)

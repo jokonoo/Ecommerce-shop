@@ -40,10 +40,10 @@ class PaymentMethodForm(forms.ModelForm):
 		fields = ['payment_method']
 
 class FilterForm(forms.Form):
-		#categories = forms.ChoiceField(label = "Select category", choices =
-		#[(str(x),str(x)) for x in Category.objects.values_list(
-		#	'name', flat = True)],
-		#	required = False)
-	categories = forms.ChoiceField(label = "Select category", choices = Product.CATEGORIES, required = False)
+	categories = forms.ChoiceField(label = "Select category", choices =
+		[(str(x),str(x)) for x in Category.objects.values_list(
+			'name', flat = True)],
+			required = False)
+	#categories = forms.ChoiceField(label = "Select category", choices = Product.CATEGORIES, required = False)
 	lowest = forms.IntegerField(label = "Enter min price", required = False) 
 	highest = forms.IntegerField(label = "Enter max price", required = False) 
