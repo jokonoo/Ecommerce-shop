@@ -104,7 +104,7 @@ class Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add = True)
     date_completed = models.DateTimeField(auto_now = True, blank = True)
     completed = models.BooleanField(default=False)
-    #transaction_id = models.CharField(max_length = 200, null = True)
+    transaction_id = models.CharField(max_length = 200, null = True, blank = True)
     #products = models.ManyToManyField(OrderItem)
     payment_method = models.CharField(max_length = 1, choices = PAYMENT_METHODS)
     total_cost = models.IntegerField(default = 0, null = True, blank = True)
@@ -120,12 +120,12 @@ class Order(models.Model):
 
     @property
     def get_cart_items(self):
-        orderitems = self.products.all()
+        orderitems = self.ordered_items.all()
         total = sum([item.quantity for item in orderitems])
         return total
 
     def __str__(self):
-        return str(self.transaction_id)
+        return f'{self.first_name} {self.last_name}, {self.date_ordered}, {self.completed}'
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name = 'ordered_items', on_delete = models.CASCADE, blank = True, null = True)
