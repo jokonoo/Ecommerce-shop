@@ -13,13 +13,10 @@ class AddToCartForm(forms.Form):
 		widget = forms.HiddenInput)
 	"""Using TypedChoiceField to make sure that quantity key is returning int values"""
 
-class CheckoutForm(forms.Form):
-	street = forms.CharField(label = 'Enter your address:', max_length = 200)
-	apartment = forms.CharField(label = 'Enter number of your apartment:', max_length = 200)
-	city = forms.CharField(label = 'Enter your city:', max_length = 200)
-	country = forms.CharField(label = 'Enter your country:', max_length = 200)
-	zipcode = forms.CharField(label = 'Enter your zipcode:', max_length = 200)
-	phone = forms.CharField(label = 'Enter your phone number:', max_length = 200)
+class OrderCreationForm(forms.ModelForm):
+	class Meta:
+		model = Order
+		fields = ['first_name', 'last_name', 'email', 'address', 'postal_code', 'city']
 
 class ShippingUpdateForm(forms.ModelForm):
 	shipping_method = forms.ChoiceField(label = 'Select', choices = Shipping.SHIPPING_METHODS)

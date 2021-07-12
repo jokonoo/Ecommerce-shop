@@ -98,13 +98,14 @@ class Order(models.Model):
     user = models.ForeignKey(User, null = True, blank = True, on_delete = models.SET_NULL)
     first_name = models.CharField(max_length = 100, blank = True)
     last_name = models.CharField(max_length = 100, blank = True)
+    email = models.EmailField(blank = True)
     address = models.CharField(max_length = 200, blank = True)
     postal_code = models.CharField(max_length = 100, blank = True)
     city = models.CharField(max_length = 100, blank = True)
     date_ordered = models.DateTimeField(auto_now_add = True)
     date_completed = models.DateTimeField(auto_now = True, blank = True)
     completed = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length = 200, null = True, blank = True)
+    #transaction_id = models.CharField(max_length = 200, null = True, blank = True)
     #products = models.ManyToManyField(OrderItem)
     payment_method = models.CharField(max_length = 1, choices = PAYMENT_METHODS)
     total_cost = models.IntegerField(default = 0, null = True, blank = True)
@@ -130,8 +131,8 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name = 'ordered_items', on_delete = models.CASCADE, blank = True, null = True)
     product = models.ForeignKey(Product, null = True, on_delete = models.CASCADE)
+    price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0)
     quantity = models.IntegerField(default = 1, null = True, blank = True)
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
 
     @property
     def get_total(self):

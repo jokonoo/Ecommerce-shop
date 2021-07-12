@@ -16,6 +16,6 @@
 {% endfor %}
 
 <h2> TOTAL PRICE OF ITEMS: {{ cart_object.get_total_price }} </h2>
-<h3><a href = "{% url 'summary_shop' %}">Go to summary</a></h3>
-<h3><a href = "{% url 'website_shop' %}">Keep shopping</a></h3>
+<button type = submit><h3><a href = "{% url 'order_create' %}">Create order</a></h3></button>
+<p><button type = submit><a href = "{% url 'website_shop' %}">Keep shopping</a></button></p>
 {% endblock content %}
