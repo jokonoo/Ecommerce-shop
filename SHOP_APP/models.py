@@ -140,7 +140,7 @@ class OrderItem(models.Model):
             return self.product.discount_price * self.quantity
         else:
             return self.product.price * self.quantity
-    
+
     def __str__(self):
         return f'Name: {self.product.name}, Quantity: {self.quantity}'
 
